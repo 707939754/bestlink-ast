@@ -16,8 +16,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "bestlink-ast.createYapi",
-        "title": "Create Yapi"
+        "command": "bestlink-ast.createApiByYapi",
+        "title": "在当前文件夹下根据yapi文档生成api文件",
+        "icon": {
+          "light": "./src/assets/add.svg",
+          "dark": "./src/assets/add.svg"
+        }
       }
     ],
     "viewsContainers": {
@@ -32,12 +36,27 @@
     "views": {
       "bestlink-toolkit": [
         {
-          "id": "toolkit.views.create",
-          "name": "创建API"
+          "id": "toolkit.views.project",
+          "name": "代码生成"
         },
         {
           "id": "toolkit.views.help",
           "name": "帮助"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "toolkit.views.project",
+        "contents": "没有已生成的接口代码\n[生成代码](command:bestlink-ast.createApiByYapi)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "bestlink-ast.createApiByYapi",
+          "when": "view == toolkit.views.project",
+          "group": "navigation"
         }
       ]
     }
@@ -54,19 +73,19 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.74.0",
     "@types/glob": "^8.0.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-electron": "^2.2.0",
     "eslint": "^8.28.0",
     "glob": "^8.0.3",
     "mocha": "^10.1.0",
-    "typescript": "^4.9.3",
     "ts-loader": "^9.4.1",
+    "typescript": "^4.9.3",
     "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.0",
-    "@vscode/test-electron": "^2.2.0"
+    "webpack-cli": "^5.0.0"
   }
 }
