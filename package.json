@@ -75,6 +75,7 @@
   },
   "devDependencies": {
     "@types/glob": "^8.0.0",
+    "@types/lodash": "^4.14.191",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
     "@types/vscode": "^1.74.0",
@@ -92,6 +93,7 @@
   "dependencies": {
     "axios": "^1.2.6",
     "bufferutil": "^4.0.7",
+    "lodash": "^4.17.21",
     "puppeteer": "^19.6.2",
     "puppeteer-core": "^19.6.2",
     "utf-8-validate": "^5.0.10"

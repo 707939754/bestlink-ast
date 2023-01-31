@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { isUrl } from "../utils";
 import puppeteer from "puppeteer";
 import { HtmlData } from "./interface";
+import { getDataByApi } from "./api-data";
 
 async function createYapi() {
   // 显示输入框
@@ -9,7 +10,9 @@ async function createYapi() {
   if (!url) {
     return;
   }
-  const data = await getHtmlByUrl(url);
+  // const data = await getHtmlByUrl(url);
+  const id = url.split("api/")[1];
+  const data = getDataByApi(id);
 }
 
 /**
@@ -24,7 +27,7 @@ async function showInputBox() {
       placeHolder: "请输入YAPI的接口地址",
       prompt: "需符合链接规范 ",
       validateInput: (str) => {
-        return isUrl(str) ? null : "不符合链接规范";
+        return isUrl(str) ? null : "请输入正确的YAPI链接";
       },
     })
     .then((msg) => {
@@ -36,6 +39,7 @@ async function showInputBox() {
 
 /**
  * 通过链接地址获取html
+ * 第一条方向：内置浏览器爬取html数据
  * @param url
  */
 async function getHtmlByUrl(url: string) {
