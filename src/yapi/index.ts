@@ -79,10 +79,10 @@ async function getHtmlByUrl(url: string) {
   });
 
   // 信息容器返回值
-  let container = await page.$(".caseContainer");
+  const container = await page.$(".caseContainer");
 
   // 基本信息
-  let baseInfo = await container?.$$(".panel-view .ant-row");
+  const baseInfo = await container?.$$(".panel-view .ant-row");
 
   // 遍历基本信息baseInfo 获取行信息
   baseInfo?.forEach(async (base, index) => {
@@ -136,6 +136,15 @@ async function getHtmlByUrl(url: string) {
       console.error("基本信息：未捕获到信息");
     }
   });
+
+  // 备注
+  resData.remarks = await container?.$eval(
+    ".tui-editor-contents p",
+    (ele) => ele.innerText
+  );
+
+  // 请求参数
+  const requestParams = "";
 
   console.log(resData, "返回值");
 }

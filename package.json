@@ -90,6 +90,7 @@
     "webpack-cli": "^5.0.0"
   },
   "dependencies": {
+    "axios": "^1.2.6",
     "bufferutil": "^4.0.7",
     "puppeteer": "^19.6.2",
     "puppeteer-core": "^19.6.2",

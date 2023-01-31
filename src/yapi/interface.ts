@@ -1,6 +1,6 @@
 export interface HtmlData {
   baseInfo: BaseInfo; // 基本信息
-  remarks?: Remarks; // 备注
+  remarks?: string; // 备注
   request?: Request; // 请求参数
   response?: Response; // 返回数据
 }
@@ -13,6 +13,5 @@ export interface BaseInfo {
   url: { type: string; path: string };
 }
 
-export interface Remarks {}
 export interface Request {}
 export interface Response {}
