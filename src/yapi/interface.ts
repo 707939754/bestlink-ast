@@ -1,4 +1,4 @@
-export interface HtmlData {
+export interface ResponseData {
   baseInfo: BaseInfo; // 基本信息
   remarks?: string; // 备注
   request?: Request; // 请求参数
@@ -15,3 +15,10 @@ export interface BaseInfo {
 
 export interface Request {}
 export interface Response {}
+
+export interface CodeType {
+  key: string;
+  type: string;
+  description: string;
+  required: boolean;
+}
