@@ -10,7 +10,7 @@ export interface BaseInfo {
   createBy: string;
   status: string;
   updateTime: string;
-  url: string;
+  url: { type: string; path: string };
 }
 
 export interface Remarks {}

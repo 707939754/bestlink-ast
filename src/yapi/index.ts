@@ -45,7 +45,10 @@ async function getHtmlByUrl(url: string) {
       createBy: "",
       status: "",
       updateTime: "",
-      url: "",
+      url: {
+        type: "",
+        path: "",
+      },
     },
   };
   // 启动浏览器
@@ -82,42 +85,59 @@ async function getHtmlByUrl(url: string) {
   let baseInfo = await container?.$$(".panel-view .ant-row");
 
   // 遍历基本信息baseInfo 获取行信息
-  baseInfo?.forEach(async (base) => {
+  baseInfo?.forEach(async (base, index) => {
     try {
-      let text = await base?.$eval(".colName", (ele) => ele.innerText);
-      console.log(text, "name");
+      // 第一行
+      if (index === 0) {
+        // 接口名称
+        resData.baseInfo.name = await base?.$eval(
+          ".colName",
+          (ele) => ele.innerText
+        );
+
+        // 创建人
+        resData.baseInfo.createBy = await base?.$eval(
+          ".colValue .user-name ",
+          (ele) => ele.innerText
+        );
+      }
+
+      // 第二行
+      if (index === 1) {
+        // 状态
+        resData.baseInfo.status = await base?.$eval(
+          ".tag-status",
+          (ele) => ele.innerText
+        );
+
+        // 更新时间
+        let secondList = await base?.$$eval(".ant-col-8", (ele) =>
+          ele.map((node) => node.innerText)
+        );
+        resData.baseInfo.updateTime =
+          secondList && secondList.length === 2 ? secondList[1] : "";
+      }
+
+      if (index === 2) {
+        // 接口请求类型
+        resData.baseInfo.url.type = await base?.$eval(
+          ".colValue .tag-method",
+          (ele) => ele.innerText
+        );
+        // 接口请求路径
+        let thirdList = await base?.$$eval(".colValue .colValue", (ele) =>
+          ele.map((node) => node.innerText)
+        );
+
+        resData.baseInfo.url.path =
+          thirdList && thirdList.length === 2 ? thirdList[1] : "";
+      }
     } catch (error) {
       console.error("基本信息：未捕获到信息");
     }
   });
-  // console.log(baseInfo);
 
-  //   await page
-  // .$eval("div.caseContainer", (ele) => ele.innerHTML)
-  // .then(async (res) => {
-  //   let baseInfo = await page.$$(".panel-view .ant-row");
-  //   console.log(baseInfo);
-  // 各类信息的数组
-  //   let infoArr = await page.$$(".panel-view");
-  //   infoArr?.forEach(async (item) => {
-  //     let target = await item.$(".colName");
-  //     console.log(target);
-  //   });
-  //   console.log(a);
-  //   console.log(res);
-  //   let arr = document.querySelectorAll(".interface-title");
-  //   console.log(arr);
-  // });
-
-  //   console.log("content", text);
-  // 等待title节点出现
-  //   await page.waitForSelector(".ant-table-wrapper");
-  //   const titleDomText1 = await page.$eval(
-  //     "interface-title",
-  //     (el) => el.innerText
-  //   );
-  //   console.log("sss", titleDomText1);
-  //   await browser.close();
+  console.log(resData, "返回值");
 }
 
 export default createYapi;
