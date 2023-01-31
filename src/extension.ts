@@ -7,7 +7,7 @@ import createYapi from "./yapi";
  * @param context
  */
 export function activate(context: vscode.ExtensionContext) {
-  console.log("激活");
+  console.log("数字平台研发部开发工具包");
   // TODO 获取已生成的代码的树数据
 
   // 默认命令
