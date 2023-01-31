@@ -72,7 +72,7 @@ async function getResponseData(data: any): Promise<ResponseData> {
     updateTime: data.up_time,
     url: {
       type: data.method,
-      url: basepath + data.path,
+      path: basepath + data.path,
     },
   };
   // 备注
@@ -82,10 +82,11 @@ async function getResponseData(data: any): Promise<ResponseData> {
   const params = getParams(data.req_query); // 用于以?拼接
   const query = getQuery(data.req_params); // 用于路径上的数据
   const request = { body, params, query };
+  // 返回数据
+  const responseBody = getReqBody(data.res_body); // 用于以请求体
+  console.log(responseBody);
 
-  console.log(request);
-
-  return { baseInfo, remarks, request } as unknown as ResponseData;
+  return { baseInfo, remarks, request } as ResponseData;
 }
 
 /**
@@ -120,7 +121,7 @@ function getReqBody(data: string) {
   const obj = JSON.parse(data);
   const properties = obj.properties;
   const propertiesKey = Object.keys(properties);
-  const codeKey = obj.required;
+  const codeKey = obj.required || [];
 
   propertiesKey?.forEach((item: string) => {
     response.push({

@@ -21,4 +21,5 @@ export interface CodeType {
   type: string;
   description: string;
   required: boolean;
+  children?: CodeType[];
 }
