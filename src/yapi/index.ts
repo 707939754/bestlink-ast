@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { isUrl } from "../utils";
 import puppeteer from "puppeteer";
+import { HtmlData } from "./interface";
 
 async function createYapi() {
   // 显示输入框
@@ -38,6 +39,15 @@ async function showInputBox() {
  * @param url
  */
 async function getHtmlByUrl(url: string) {
+  let resData: HtmlData = {
+    baseInfo: {
+      name: "",
+      createBy: "",
+      status: "",
+      updateTime: "",
+      url: "",
+    },
+  };
   // 启动浏览器
   const browser = await puppeteer.launch({
     headless: true, // 默认是无头模式，这里为了示范所以使用正常模式
@@ -67,8 +77,20 @@ async function getHtmlByUrl(url: string) {
 
   // 信息容器返回值
   let container = await page.$(".caseContainer");
+
+  // 基本信息
   let baseInfo = await container?.$$(".panel-view .ant-row");
-  console.log(baseInfo);
+
+  // 遍历基本信息baseInfo 获取行信息
+  baseInfo?.forEach(async (base) => {
+    try {
+      let text = await base?.$eval(".colName", (ele) => ele.innerText);
+      console.log(text, "name");
+    } catch (error) {
+      console.error("基本信息：未捕获到信息");
+    }
+  });
+  // console.log(baseInfo);
 
   //   await page
   // .$eval("div.caseContainer", (ele) => ele.innerHTML)
