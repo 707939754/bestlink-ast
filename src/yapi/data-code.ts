@@ -9,7 +9,7 @@ import { CACHE, PRETTIERCONFIG } from "../config/.env";
 import * as prettier from "prettier";
 import * as vscode from "vscode";
 import * as _ from "lodash";
-import { getComment, getTemplate } from "./template";
+import { getComment, getTemplate, getInterface } from "./template";
 /**
  * 通过数据转换为typescript 字符串
  */
@@ -23,8 +23,11 @@ export default class DataToTypescript {
   // 产出信息
   private interfaceName: string = "";
   private responseName: string = "";
+  private paramName: string = "";
   private functionStr: string;
   private interfaceStr: string;
+
+  // 当前接口传参方式
 
   constructor(responseData: ResponseData) {
     const { baseInfo, remarks, request, response } = responseData;
@@ -38,10 +41,18 @@ export default class DataToTypescript {
   }
 
   /**
-   * 获取接口数据
+   * 获取请求接口的数据
    */
   getInterface() {
-    return "";
+    let flag = "";
+    if (this.paramName === "data") {
+      flag = "body";
+    } else if (this.paramName === "params") {
+      flag = "params";
+    } else {
+      flag = "query";
+    }
+    return getInterface(this.interfaceName, _.get(this, "request." + flag));
   }
 
   /**
@@ -58,10 +69,10 @@ export default class DataToTypescript {
       _.toLower(this.baseInfo.url.type) +
       _.upperFirst(_.last(_.split(this.baseInfo.url.path, "/")));
     // 形参名
-    const paramName = this.getParamNameByRequest();
+    this.paramName = this.getParamNameByRequest();
     // 形参接口名
     this.interfaceName =
-      _.upperFirst(_.last(_.split(this.baseInfo.url.path, "/"))) + "Interface";
+      _.upperFirst(_.last(_.split(this.baseInfo.url.path, "/"))) + "Request";
     // 返回接口名
     this.responseName =
       _.upperFirst(_.last(_.split(this.baseInfo.url.path, "/"))) + "Response";
@@ -70,7 +81,7 @@ export default class DataToTypescript {
     const functionStr = getTemplate({
       commend,
       functionName,
-      paramName,
+      paramName: this.paramName,
       interfaceName: this.interfaceName,
       actionName: this.baseInfo.url.type,
       responseName: this.responseName,
@@ -90,13 +101,14 @@ export default class DataToTypescript {
       _.isEmpty(this.request.query)
     ) {
       return "data";
-    }
-    if (
+    } else if (
       _.isEmpty(this.request.body) &&
       !_.isEmpty(this.request.params) &&
       _.isEmpty(this.request.query)
     ) {
       return "params";
+    } else {
+      return "query";
     }
   }
 
@@ -128,7 +140,7 @@ export default class DataToTypescript {
       }
       const fileName = this.baseInfo.name + ".ts"; // 文件名称
       const filePath = CACHE + fileName; // 文件路径
-      const str = this.prettyCode(this.functionStr); // 格式化代码
+      const str = this.prettyCode(this.functionStr + "" + this.interfaceStr); // 格式化代码
 
       createFileSync(filePath); // 创建文件
       outputFileSync(filePath, str); // 输入值

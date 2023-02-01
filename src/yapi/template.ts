@@ -1,4 +1,4 @@
-import { Template, BaseInfo } from "./interface";
+import { Template, BaseInfo, CodeType } from "./interface";
 import * as _ from "lodash";
 /**
  * 根据模板获取对应的字符串
@@ -51,4 +51,31 @@ export function getComment(commend: BaseInfo, remarks?: string) {
  */
 export function getResult() {
   return `import http from '@/utils/axios';import { Result } from '@/utils/axios/types';`;
+}
+
+/**
+ * 获取接口数据
+ */
+export function getInterface(interfaceName: string, keyCode: Array<CodeType>) {
+  return `
+  /**
+   * 请求数据的接口类型
+   */
+  export interface ${interfaceName} {
+    ${getKeyCode(keyCode)}
+  }`;
+}
+
+/**
+ * 获取接口
+ * @param keyCode
+ */
+function getKeyCode(keyCode: Array<CodeType>) {
+  let str = "";
+  keyCode.forEach((item) => {
+    str += `${item.key} ${item.required ? "" : "?"}: ${item.type}; // ${
+      item.description
+    }\n`;
+  });
+  return str;
 }
