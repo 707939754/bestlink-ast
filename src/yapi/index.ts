@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { isUrl } from "../utils";
 import { ResponseData } from "./interface";
 import { getDataByApi } from "./api-data";
+import DataToTypescript from "./data-code";
 
 async function createYapi() {
   // 显示输入框
@@ -10,7 +11,11 @@ async function createYapi() {
     return;
   }
   const id = url.split("api/")[1];
-  const data = getDataByApi(id);
+  const data = await getDataByApi(id);
+
+  const dataCode = new DataToTypescript(data); // 执行代码生成
+  dataCode.outFile();
+  console.log(data);
 }
 
 /**
