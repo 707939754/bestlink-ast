@@ -56,10 +56,14 @@ export function getResult() {
 /**
  * 获取接口数据
  */
-export function getInterface(interfaceName: string, keyCode: Array<CodeType>) {
+export function getInterface(
+  commend: string,
+  interfaceName: string,
+  keyCode: Array<CodeType>
+) {
   return `
   /**
-   * 请求数据的接口类型
+   * ${commend}
    */
   export interface ${interfaceName} {
     ${getKeyCode(keyCode)}

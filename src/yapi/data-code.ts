@@ -41,9 +41,10 @@ export default class DataToTypescript {
   }
 
   /**
-   * 获取请求接口的数据
+   * 获取接口类型
    */
   getInterface() {
+    // 获取请求的接口类型
     let flag = "";
     if (this.paramName === "data") {
       flag = "body";
@@ -52,7 +53,20 @@ export default class DataToTypescript {
     } else {
       flag = "query";
     }
-    return getInterface(this.interfaceName, _.get(this, "request." + flag));
+    const reqInterface = getInterface(
+      "请求的接口类型",
+      this.interfaceName,
+      _.get(this, "request." + flag)
+    );
+
+    // 获取返回的接口类型
+    const resInterface = getInterface(
+      "返回的接口类型",
+      this.responseName,
+      this.response
+    );
+
+    return reqInterface + " \n " + resInterface;
   }
 
   /**
