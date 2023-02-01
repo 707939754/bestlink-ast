@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as _ from "lodash";
 import { isUrl } from "../utils";
 import { ResponseData } from "./interface";
 import { getDataByApi } from "./api-data";
@@ -10,12 +11,15 @@ async function createYapi() {
   if (!url) {
     return;
   }
-  const id = url.split("api/")[1];
+  // 接口ID
+  const id = _.last(_.split(url, "api/"));
+  if (!id) {
+    return;
+  }
   const data = await getDataByApi(id);
-
+  console.log(data);
   const dataCode = new DataToTypescript(data); // 执行代码生成
   dataCode.outFile();
-  console.log(data);
 }
 
 /**

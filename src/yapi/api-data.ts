@@ -7,7 +7,6 @@ let cookie = "";
 
 /**
  * 通过链接地址获取数据
- * 第二条方向：通过接口获取数据
  * @param url
  */
 export async function getDataByApi(id: string) {
@@ -32,8 +31,10 @@ async function getCookie() {
       password: "mima5683",
     },
   }).then((res) => {
-    const setCookie = _.get(res, "headers.set-cookie", "");
-    cookie = setCookie[0].split(";")[0] + ";" + setCookie[1].split(";")[0];
+    const setCookie = _.get(res, "headers.set-cookie", [] as Array<string>);
+    if (setCookie && setCookie.length >= 2) {
+      cookie = setCookie[0].split(";")[0] + ";" + setCookie[1].split(";")[0];
+    }
   });
   return cookie;
 }

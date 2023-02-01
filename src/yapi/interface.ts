@@ -13,8 +13,13 @@ export interface BaseInfo {
   url: { type: string; path: string };
 }
 
-export interface Request {}
-export interface Response {}
+export interface Request {
+  body: Array<CodeType>;
+  params: Array<CodeType>;
+  query: Array<CodeType>;
+}
+
+export type Response = Array<CodeType>;
 
 export interface CodeType {
   key: string;
@@ -22,4 +27,15 @@ export interface CodeType {
   description: string;
   required: boolean;
   children?: CodeType[];
+}
+
+// template
+export interface Template {
+  commend: string;
+  functionName: string;
+  paramName: string | undefined;
+  interfaceName: string;
+  actionName: string;
+  responseName: string;
+  url: string;
 }
