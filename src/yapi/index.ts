@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import * as _ from "lodash";
 import { isUrl } from "../utils";
-import { ResponseData } from "./interface";
 import { getDataByApi } from "./api-data";
 import DataToTypescript from "./data-code";
 
@@ -17,7 +16,6 @@ async function createYapi() {
     return;
   }
   const data = await getDataByApi(id);
-  console.log(data);
   const dataCode = new DataToTypescript(data); // 执行代码生成
   dataCode.outFile();
 }
