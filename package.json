@@ -20,8 +20,8 @@
         "command": "bestlink-ast.createApiByYapi",
         "title": "在当前文件夹下根据yapi文档生成api文件",
         "icon": {
-          "light": "./src/assets/add.svg",
-          "dark": "./src/assets/add.svg"
+          "light": "./public/add.svg",
+          "dark": "./public/add.svg"
         }
       }
     ],
