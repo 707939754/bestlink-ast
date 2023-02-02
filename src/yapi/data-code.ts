@@ -101,7 +101,7 @@ export default class DataToTypescript {
     this.responseName = _.upperFirst(detailWord) + "Response";
 
     // 方法str
-    if (this.paramName === "data" || this.paramName === "params") {
+    if (this.paramName !== "query") {
       return getTemplate({
         commend,
         functionName,
@@ -141,8 +141,14 @@ export default class DataToTypescript {
       _.isEmpty(this.request.query)
     ) {
       return "params";
-    } else {
+    } else if (
+      _.isEmpty(this.request.body) &&
+      _.isEmpty(this.request.params) &&
+      !_.isEmpty(this.request.query)
+    ) {
       return "query";
+    } else {
+      return "";
     }
   }
 

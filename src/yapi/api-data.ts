@@ -14,6 +14,8 @@ export async function getDataByApi(id: string) {
   const apiData = await getData(id);
   //TODO 处理为对象方便生成代码
   const response = await getResponseData(apiData);
+  console.log(response);
+
   return response;
 }
 
@@ -83,7 +85,7 @@ async function getResponseData(data: any): Promise<ResponseData> {
   const query = getQuery(data.req_params); // 用于路径上的数据
   const request = { body, params, query };
   // 返回数据
-  const response = getReqBody(data.res_body); // 用于以请求体
+  const response = getResBody(data.res_body); // 用于以请求体
 
   return { baseInfo, remarks, request, response } as ResponseData;
 }
@@ -115,9 +117,65 @@ function getReqBody(data: string): CodeType[] {
   if (_.isEmpty(data)) {
     return [];
   }
+  let response: CodeType[] = [];
+
+  const obj = JSON.parse(data);
+  const properties = obj.properties;
+  const propertiesKey = Object.keys(properties);
+  const codeKey = obj.required || [];
+  response = getRequestBody(propertiesKey, properties, codeKey);
+  return response;
+}
+
+/**
+ * 根据string获取请求体
+ * @param data
+ */
+function getResBody(data: string): CodeType[] {
+  if (_.isEmpty(data)) {
+    return [];
+  }
   const obj = JSON.parse(data);
   const resData = _.get(obj, "properties.data");
   return getTreeResponse(resData);
+}
+
+/**
+ * 递归获取树结构返回值
+ * @param propertiesKey
+ * @param obj
+ * @param codeKey
+ * @returns
+ */
+function getRequestBody(
+  propertiesKey: Array<any>,
+  obj: any,
+  codeKey: Array<string>
+) {
+  let response: CodeType[] = [];
+  propertiesKey?.forEach((item: string) => {
+    if (_.isEmpty(_.get(obj, item + ".properties", []))) {
+      response.push({
+        key: item,
+        type: _.get(obj, item + ".type", ""),
+        description: _.get(obj, item + ".description", ""),
+        required: codeKey.includes(item),
+      });
+    } else {
+      const copyCodeKey = _.get(obj, item + ".required", []);
+      const copyObj = _.get(obj, item + ".properties", []);
+      const copyPropertiesKey = Object.keys(copyObj);
+      response.push({
+        key: item,
+        type: _.get(obj, item + ".type", ""),
+        description: _.get(obj, item + ".description", ""),
+        required: codeKey.includes(item),
+        children: getRequestBody(copyPropertiesKey, copyObj, copyCodeKey),
+      });
+    }
+  });
+
+  return response;
 }
 
 /**
