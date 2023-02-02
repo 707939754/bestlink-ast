@@ -191,6 +191,10 @@ export default class DataToTypescript {
           "toolkit.views.project",
           new GetYapiDir()
         );
+        // 主动打开已生成的文件
+        vscode.workspace.openTextDocument(filePath).then((document) => {
+          vscode.window.showTextDocument(document);
+        });
       }
     } catch (err) {
       vscode.window.showErrorMessage("生成文档失败：" + fileName);
