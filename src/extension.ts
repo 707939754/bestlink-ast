@@ -2,6 +2,7 @@
 import * as vscode from "vscode";
 import createYapi from "./yapi";
 import GetYapiDir from "./yapi/yapi-dir";
+import { YAPICACHE } from "./config/.env";
 
 /**
  * 插件激活
@@ -24,6 +25,18 @@ export function activate(context: vscode.ExtensionContext) {
     "toolkit.views.project",
     new GetYapiDir()
   );
+
+  // 代码文件点击命令
+  let showFile = vscode.commands.registerCommand(
+    "YapiCodeFile.itemClick",
+    (name: string) => {
+      // 主动打开已生成的文件
+      vscode.workspace.openTextDocument(YAPICACHE + name).then((document) => {
+        vscode.window.showTextDocument(document);
+      });
+    }
+  );
+  context.subscriptions.push(showFile);
 }
 
 /**

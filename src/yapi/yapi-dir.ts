@@ -55,4 +55,14 @@ class DataItem extends TreeItem {
     );
     this.children = children;
   }
+
+  //为每项添加点击事件的命令
+  command = {
+    title: "codeFile",
+    command: "YapiCodeFile.itemClick",
+    arguments: [
+      //传递两个参数
+      this.label,
+    ],
+  };
 }
