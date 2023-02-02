@@ -4,6 +4,8 @@ export const API = "http://192.168.0.68:3000/api/interface/get";
 export const GROUP = "http://192.168.0.68:3000/api/project/get";
 // 全局储存文件夹的路径
 export const CACHE = "D:/bestlink-cache/";
+// 生成的代码存储路径
+export const YAPICACHE = "D:/bestlink-cache/yapi/";
 // 格式化代码的配置项
 export const PRETTIERCONFIG = {
   singleQuote: true,

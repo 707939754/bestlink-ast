@@ -5,7 +5,7 @@ import {
   outputFileSync,
   mkdirsSync,
 } from "fs-extra";
-import { CACHE, PRETTIERCONFIG } from "../config/.env";
+import { YAPICACHE } from "../config/.env";
 import * as prettier from "prettier";
 import * as vscode from "vscode";
 import * as _ from "lodash";
@@ -16,6 +16,8 @@ import {
   getDefaultResult,
   getQueryTemplate,
 } from "./template";
+import GetYapiDir from "./yapi-dir";
+
 /**
  * 通过数据转换为typescript 字符串
  */
@@ -168,21 +170,27 @@ export default class DataToTypescript {
    */
   async outFile() {
     const fileName = this.baseInfo.name + ".ts"; // 文件名称
-    const filePath = CACHE + fileName; // 文件路径
+    const filePath = YAPICACHE + fileName; // 文件路径
     const prettierRes = this.prettyCode(
       this.functionStr + "" + this.interfaceStr
     ); // 格式化代码
 
     try {
-      const pathExist = pathExistsSync(CACHE);
+      const pathExist = pathExistsSync(YAPICACHE);
       if (!pathExist) {
-        mkdirsSync(CACHE);
+        mkdirsSync(YAPICACHE);
       }
       // 格式化成功后 再执行创建文件
       if (!prettierRes.hasErr) {
         createFileSync(filePath); // 创建文件
         outputFileSync(filePath, prettierRes.result); // 输入值
         vscode.window.showInformationMessage("生成代码成功：" + fileName);
+
+        // 获取生成代码的文件
+        vscode.window.registerTreeDataProvider(
+          "toolkit.views.project",
+          new GetYapiDir()
+        );
       }
     } catch (err) {
       vscode.window.showErrorMessage("生成文档失败：" + fileName);
