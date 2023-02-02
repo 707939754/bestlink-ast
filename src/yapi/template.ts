@@ -43,7 +43,6 @@ export function getComment(commend: BaseInfo, remarks?: string) {
        "YYYY-MM-DD HH:mm:ss"
      )}
      * 备注：${remarks}
-     * @returns
      */
     `;
 }
@@ -53,7 +52,24 @@ export function getComment(commend: BaseInfo, remarks?: string) {
  * @returns
  */
 export function getResult() {
-  return `import http from '@/utils/axios';import { Result } from '@/utils/axios/types';`;
+  return `import http from '@/utils/axios';`;
+}
+
+/**
+ * 默认返回值
+ * @returns
+ */
+export function getDefaultResult() {
+  return `
+  /**
+   * 默认返回值外壳
+   */
+  export interface Result<T = any> {
+    success: boolean
+    code: number
+    message: string
+    data: T
+  }`;
 }
 
 /**

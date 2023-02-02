@@ -9,7 +9,12 @@ import { CACHE, PRETTIERCONFIG } from "../config/.env";
 import * as prettier from "prettier";
 import * as vscode from "vscode";
 import * as _ from "lodash";
-import { getComment, getTemplate, getInterface } from "./template";
+import {
+  getComment,
+  getTemplate,
+  getInterface,
+  getDefaultResult,
+} from "./template";
 /**
  * 通过数据转换为typescript 字符串
  */
@@ -66,7 +71,7 @@ export default class DataToTypescript {
       this.response
     );
 
-    return reqInterface + " \n " + resInterface;
+    return getDefaultResult() + " \n " + reqInterface + " \n " + resInterface;
   }
 
   /**
