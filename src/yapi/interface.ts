@@ -38,4 +38,5 @@ export interface Template {
   actionName: string;
   responseName: string;
   url: string;
+  endWord?: string;
 }

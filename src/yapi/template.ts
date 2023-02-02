@@ -29,6 +29,25 @@ export function getTemplate(template: Template) {
 }
 
 /**
+ * 根据模板生成链接上的方法
+ * @returns
+ */
+export function getQueryTemplate(template: Template) {
+  return `
+  ${getResult()}
+  ${template.commend} export function ${template.functionName}(data: ${
+    template.interfaceName
+  }) {
+        return http.${_.toLower(template.actionName)}<Result<${
+    template.responseName
+  }>>({
+          url: \`${template.url.replace(template.endWord || "", "${data}")}\`,
+        })
+      }
+    `;
+}
+
+/**
  * 生成注释
  * @param commend
  * @returns

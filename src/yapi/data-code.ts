@@ -14,6 +14,7 @@ import {
   getTemplate,
   getInterface,
   getDefaultResult,
+  getQueryTemplate,
 } from "./template";
 /**
  * 通过数据转换为typescript 字符串
@@ -81,33 +82,45 @@ export default class DataToTypescript {
     if (_.isEmpty(this.baseInfo.url.path)) {
       return;
     }
+    // 链接最后单词 用于方法名 & 形参名 & 接口名
+    const endWord = _.last(_.split(this.baseInfo.url.path, "/"));
+
+    const detailWord = endWord?.replace("{", "").replace("}", "");
     // 注释
     const commend = getComment(this.baseInfo, this.remarks);
     // 方法名
     const functionName =
-      _.toLower(this.baseInfo.url.type) +
-      _.upperFirst(_.last(_.split(this.baseInfo.url.path, "/")));
+      _.toLower(this.baseInfo.url.type) + _.upperFirst(detailWord);
     // 形参名
     this.paramName = this.getParamNameByRequest();
     // 形参接口名
-    this.interfaceName =
-      _.upperFirst(_.last(_.split(this.baseInfo.url.path, "/"))) + "Request";
+    this.interfaceName = _.upperFirst(detailWord) + "Request";
     // 返回接口名
-    this.responseName =
-      _.upperFirst(_.last(_.split(this.baseInfo.url.path, "/"))) + "Response";
+    this.responseName = _.upperFirst(detailWord) + "Response";
 
     // 方法str
-    const functionStr = getTemplate({
-      commend,
-      functionName,
-      paramName: this.paramName,
-      interfaceName: this.interfaceName,
-      actionName: this.baseInfo.url.type,
-      responseName: this.responseName,
-      url: this.baseInfo.url.path,
-    });
-
-    return functionStr;
+    if (this.paramName === "data" || this.paramName === "params") {
+      return getTemplate({
+        commend,
+        functionName,
+        paramName: this.paramName,
+        interfaceName: this.interfaceName,
+        actionName: this.baseInfo.url.type,
+        responseName: this.responseName,
+        url: this.baseInfo.url.path,
+      });
+    } else {
+      return getQueryTemplate({
+        commend,
+        functionName,
+        paramName: this.paramName,
+        interfaceName: this.interfaceName,
+        actionName: this.baseInfo.url.type,
+        responseName: this.responseName,
+        url: this.baseInfo.url.path,
+        endWord: endWord,
+      });
+    }
   }
 
   /**
