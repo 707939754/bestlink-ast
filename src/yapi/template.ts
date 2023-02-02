@@ -1,5 +1,6 @@
 import { Template, BaseInfo, CodeType } from "./interface";
 import * as _ from "lodash";
+import dayjs from "dayjs";
 /**
  * 根据模板获取对应的字符串
  * @param commend 注释
@@ -38,7 +39,9 @@ export function getComment(commend: BaseInfo, remarks?: string) {
      * ${commend.name}
      * 后端负责人：${commend.createBy}
      * 接口状态：${commend.status === "done" ? "已完成" : "未完成"}
-     * 更新时间：${commend.updateTime}
+     * 更新时间：${dayjs(parseInt(commend.updateTime) * 1000).format(
+       "YYYY-MM-DD HH:mm:ss"
+     )}
      * 备注：${remarks}
      * @returns
      */
@@ -77,9 +80,29 @@ export function getInterface(
 function getKeyCode(keyCode: Array<CodeType>) {
   let str = "";
   keyCode.forEach((item) => {
-    str += `${item.key} ${item.required ? "" : "?"}: ${item.type}; // ${
-      item.description
-    }\n`;
+    if (item.children) {
+      str += `${item.key} ${item.required ? "" : "?"}: {\n ${getKeyCode(
+        item.children
+      )} } \n; // ${item.description}\n`;
+    } else {
+      str += `${item.key} ${item.required ? "" : "?"}: ${getKeyType(
+        item.type
+      )}; // ${item.description}\n`;
+    }
   });
   return str;
+}
+
+/**
+ * 根据后端不同类型做适配
+ */
+function getKeyType(type: string) {
+  switch (type) {
+    case "integer":
+      return "number";
+    case "array":
+      return "[]";
+    default:
+      return type;
+  }
 }

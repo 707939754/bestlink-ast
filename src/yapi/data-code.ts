@@ -130,37 +130,44 @@ export default class DataToTypescript {
    * 格式化字符串代码
    * @param str
    */
-  prettyCode(str: string): string {
+  prettyCode(str: string): { result: string; hasErr: boolean } {
     // 格式化美化文件
     let result = "";
+    let hasErr = false;
     try {
       result = prettier.format(str, {
         parser: "typescript",
       });
     } catch (error) {
+      hasErr = true;
       vscode.window.showErrorMessage("文件格式化失败");
     }
-    return result;
+    return { result, hasErr };
   }
 
   /**
    * 输出文档
    */
   async outFile() {
+    const fileName = this.baseInfo.name + ".ts"; // 文件名称
+    const filePath = CACHE + fileName; // 文件路径
+    const prettierRes = this.prettyCode(
+      this.functionStr + "" + this.interfaceStr
+    ); // 格式化代码
+
     try {
       const pathExist = pathExistsSync(CACHE);
       if (!pathExist) {
         mkdirsSync(CACHE);
       }
-      const fileName = this.baseInfo.name + ".ts"; // 文件名称
-      const filePath = CACHE + fileName; // 文件路径
-      const str = this.prettyCode(this.functionStr + "" + this.interfaceStr); // 格式化代码
-
-      createFileSync(filePath); // 创建文件
-      outputFileSync(filePath, str); // 输入值
-      vscode.window.showInformationMessage("生成代码成功：" + fileName);
+      // 格式化成功后 再执行创建文件
+      if (!prettierRes.hasErr) {
+        createFileSync(filePath); // 创建文件
+        outputFileSync(filePath, prettierRes.result); // 输入值
+        vscode.window.showInformationMessage("生成代码成功：" + fileName);
+      }
     } catch (err) {
-      vscode.window.showErrorMessage("生成文档失败");
+      vscode.window.showErrorMessage("生成文档失败：" + fileName);
     }
   }
 }
