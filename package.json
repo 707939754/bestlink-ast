@@ -30,7 +30,7 @@
         {
           "id": "bestlink-toolkit",
           "title": "嘉环开发工具包",
-          "icon": "./src/assets/logo.svg"
+          "icon": "./public/logo.svg"
         }
       ]
     },
