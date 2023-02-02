@@ -99,11 +99,11 @@ function getKeyCode(keyCode: Array<CodeType>) {
     if (item.children) {
       str += `${item.key} ${item.required ? "" : "?"}: {\n ${getKeyCode(
         item.children
-      )} } \n; // ${item.description}\n`;
+      )} } \n; ${item.description ? `// ${item.description}` : ""}\n`;
     } else {
       str += `${item.key} ${item.required ? "" : "?"}: ${getKeyType(
         item.type
-      )}; // ${item.description}\n`;
+      )}; ${item.description ? `// ${item.description}` : ""}\n`;
     }
   });
   return str;
@@ -118,6 +118,8 @@ function getKeyType(type: string) {
       return "number";
     case "array":
       return "[]";
+    case "null":
+      return "any";
     default:
       return type;
   }

@@ -111,56 +111,55 @@ async function getBasePath(projectId: string) {
  * 根据string获取请求体
  * @param data
  */
-function getReqBody(data: string) {
+function getReqBody(data: string): CodeType[] {
   if (_.isEmpty(data)) {
     return [];
   }
-  let response: CodeType[] = [];
-
   const obj = JSON.parse(data);
-  const properties = obj.properties;
-  const propertiesKey = Object.keys(properties);
-  const codeKey = obj.required || [];
-  response = getTreeBody(propertiesKey, properties, codeKey);
-  return response;
+  const resData = _.get(obj, "properties.data");
+  return getTreeResponse(resData);
 }
 
 /**
- * 递归获取树结构返回值
- * @param propertiesKey
- * @param obj
- * @param codeKey
- * @returns
+ * 获取返回值数结构
+ * @param data
  */
-function getTreeBody(
-  propertiesKey: Array<any>,
-  obj: any,
-  codeKey: Array<string>
-) {
-  let response: CodeType[] = [];
-  propertiesKey?.forEach((item: string) => {
-    if (_.isEmpty(_.get(obj, item + ".properties", []))) {
-      response.push({
-        key: item,
-        type: _.get(obj, item + ".type", ""),
-        description: _.get(obj, item + ".description", ""),
-        required: codeKey.includes(item),
+function getTreeResponse(data: any): Array<CodeType> {
+  let res: CodeType[] = [];
+  let keys = Object.keys(_.get(data, "properties", {})); // key值集合
+  let required = _.get(data, "required", []); // 必填项
+  keys?.forEach((key) => {
+    // 存在两种子集 一种以items包裹 一种没有item包裹
+    if (!_.isEmpty(_.get(data, "properties." + key + ".properties", {}))) {
+      let properties = _.get(data, "properties." + key, {});
+      res.push({
+        key: key,
+        description: _.get(data, "properties." + key + ".description", ""),
+        required: required.includes(key),
+        type: _.get(data, "properties." + key + ".type", ""),
+        children: getTreeResponse(properties),
       });
     } else {
-      const copyCodeKey = _.get(obj, item + ".required", []);
-      const copyObj = _.get(obj, item + ".properties", []);
-      const copyPropertiesKey = Object.keys(copyObj);
-      response.push({
-        key: item,
-        type: _.get(obj, item + ".type", ""),
-        description: _.get(obj, item + ".description", ""),
-        required: codeKey.includes(item),
-        children: getTreeBody(copyPropertiesKey, copyObj, copyCodeKey),
-      });
+      if (_.isEmpty(_.get(data, "properties." + key + ".items", {}))) {
+        res.push({
+          key: key,
+          description: _.get(data, "properties." + key + ".description", ""),
+          required: required.includes(key),
+          type: _.get(data, "properties." + key + ".type", ""),
+        });
+      } else {
+        let children = _.get(data, "properties." + key + ".items", {});
+        res.push({
+          key: key,
+          description: _.get(data, "properties." + key + ".description", ""),
+          required: required.includes(key),
+          type: _.get(data, "properties." + key + ".type", ""),
+          children: getTreeResponse(children),
+        });
+      }
     }
   });
-
-  return response;
+  return res;
 }
 
 /**
