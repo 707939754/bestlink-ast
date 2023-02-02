@@ -14,7 +14,6 @@ export async function getDataByApi(id: string) {
   const apiData = await getData(id);
   //TODO 处理为对象方便生成代码
   const response = await getResponseData(apiData);
-  console.log(response);
 
   return response;
 }
