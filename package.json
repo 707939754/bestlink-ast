@@ -2,7 +2,7 @@
   "name": "bestlink-ast",
   "displayName": "bestlink-ast",
   "description": "",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "license": "MIT",
   "engines": {
     "vscode": "^1.74.0"
