@@ -1,9 +1,9 @@
 // 全局注册vscode
 import * as vscode from "vscode";
-import createYapi from "./yapi";
+import { createYapi, deleteYapi } from "./yapi";
 import GetYapiDir from "./yapi/yapi-dir";
 import { YAPICACHE } from "./config/.env";
-
+import { DataItem } from "./yapi/yapi-dir";
 /**
  * 插件激活
  * @param context
@@ -11,7 +11,7 @@ import { YAPICACHE } from "./config/.env";
 export function activate(context: vscode.ExtensionContext) {
   console.log("数字平台研发部开发工具包");
 
-  // 默认命令
+  // 生成代码文件
   let disposable = vscode.commands.registerCommand(
     "bestlink-ast.createApiByYapi",
     () => {
@@ -19,6 +19,15 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
   context.subscriptions.push(disposable);
+
+  // 删除代码文件
+  let deleteYapiCode = vscode.commands.registerCommand(
+    "bestlink-ast.deleteYapiCode",
+    (file: DataItem) => {
+      deleteYapi(file.label);
+    }
+  );
+  context.subscriptions.push(deleteYapiCode);
 
   // 获取生成代码的文件
   vscode.window.registerTreeDataProvider(

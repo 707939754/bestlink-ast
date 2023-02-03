@@ -3,8 +3,12 @@ import * as _ from "lodash";
 import { isUrl } from "../utils";
 import { getDataByApi } from "./api-data";
 import DataToTypescript from "./data-code";
+import { TreeItemLabel } from "vscode";
+import { YAPICACHE } from "../config/.env";
+import { mkdirsSync, pathExistsSync, unlink } from "fs-extra";
+import GetYapiDir from "./yapi-dir";
 
-async function createYapi() {
+export async function createYapi() {
   // 显示输入框
   let url = await showInputBox();
   if (!url) {
@@ -18,6 +22,28 @@ async function createYapi() {
   const data = await getDataByApi(id);
   const dataCode = new DataToTypescript(data); // 执行代码生成
   dataCode.outFile();
+}
+
+/**
+ * 删除已完成的文件
+ */
+export function deleteYapi(fileName: string | TreeItemLabel | undefined) {
+  if (_.isEmpty(fileName)) {
+    vscode.window.showErrorMessage("文件不存在");
+    return;
+  }
+  const filePath = YAPICACHE + fileName;
+  const pathExist = pathExistsSync(filePath);
+  if (!pathExist) {
+    vscode.window.showErrorMessage("文件不存在");
+    return;
+  }
+  unlink(filePath).then((res) => {
+    vscode.window.registerTreeDataProvider(
+      "toolkit.views.project",
+      new GetYapiDir()
+    );
+  });
 }
 
 /**
@@ -41,4 +67,3 @@ async function showInputBox() {
 
   return res;
 }
-export default createYapi;

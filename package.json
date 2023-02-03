@@ -23,6 +23,14 @@
           "light": "./public/add.svg",
           "dark": "./public/add.svg"
         }
+      },
+      {
+        "command": "bestlink-ast.deleteYapiCode",
+        "title": "delete",
+        "icon": {
+          "light": "./public/add.svg",
+          "dark": "./public/add.svg"
+        }
       }
     ],
     "viewsContainers": {
@@ -66,6 +74,12 @@
           "command": "bestlink-ast.createApiByYapi",
           "when": "view == toolkit.views.project",
           "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "bestlink-ast.deleteYapiCode",
+          "when": "view == toolkit.views.project"
         }
       ]
     }

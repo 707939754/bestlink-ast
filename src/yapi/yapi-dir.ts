@@ -44,7 +44,7 @@ export default class GetYapiDir implements TreeDataProvider<DataItem> {
   }
 }
 
-class DataItem extends TreeItem {
+export class DataItem extends TreeItem {
   public children: DataItem[] | undefined;
   constructor(label: string, children?: DataItem[] | undefined) {
     super(
